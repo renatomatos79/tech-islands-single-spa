@@ -1,0 +1,61 @@
+<!doctype html>
+<html>
+  <head>
+    <title>single-spa React MFE</title>
+
+    <script type="importmap">
+      {
+        "imports": {
+          "@app/header": "http://localhost:4101/src/main.tsx",
+          "@app/footer": "http://localhost:4102/src/main.tsx",
+          "@app/home": "http://localhost:4103/src/main.tsx",
+          "@app/auth": "http://localhost:4104/src/main.tsx",
+          "@app/nav": "http://localhost:4105/src/main.tsx",
+          "@app/user": "http://localhost:4106/src/main.tsx",
+          "@app/products": "http://localhost:4107/src/main.tsx"
+        }
+      }
+    </script>
+
+    <script type="module">
+      import RefreshRuntime from "http://localhost:4101/@react-refresh";
+
+      RefreshRuntime.injectIntoGlobalHook(window);
+      window.$RefreshReg$ = () => {};
+      window.$RefreshSig$ = () => (type) => type;
+      window.__vite_plugin_react_preamble_installed__ = true;
+    </script>
+  </head>
+
+  <body>
+    <template id="single-spa-layout">
+      <single-spa-router>
+        <application name="@app/header"></application>
+
+        <main>
+          <route default>
+            <application name="@app/home"></application>
+          </route>
+
+          <route path="login">
+            <application name="@app/auth"></application>
+          </route>
+
+          <route path="user">
+            <application name="@app/nav"></application>
+            <application name="@app/user"></application>
+          </route>
+
+          <route path="products">
+            <application name="@app/nav"></application>
+            <application name="@app/products"></application>
+          </route>
+        </main>
+
+        <application name="@app/footer"></application>
+      </single-spa-router>
+    </template>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
