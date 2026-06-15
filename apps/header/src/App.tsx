@@ -1,23 +1,34 @@
 import { useEffect, useState } from "react";
 import { navigateToUrl } from "single-spa";
-import { isAuthenticated } from "../../../packages/shared-auth/src";
+import {
+  isAuthenticated,
+  shouldShowHeader,
+} from "../../../packages/shared-auth/src";
 
 export default function App() {
   const [authenticated, setAuthenticated] = useState(isAuthenticated);
+  const [visible, setVisible] = useState(shouldShowHeader);
 
   useEffect(() => {
-    function syncAuthState() {
+    function syncHeaderState() {
       setAuthenticated(isAuthenticated());
+      setVisible(shouldShowHeader());
     }
 
-    window.addEventListener("auth-changed", syncAuthState);
-    window.addEventListener("storage", syncAuthState);
+    window.addEventListener("auth-changed", syncHeaderState);
+    window.addEventListener("single-spa:routing-event", syncHeaderState);
+    window.addEventListener("popstate", syncHeaderState);
+    window.addEventListener("storage", syncHeaderState);
 
     return () => {
-      window.removeEventListener("auth-changed", syncAuthState);
-      window.removeEventListener("storage", syncAuthState);
+      window.removeEventListener("auth-changed", syncHeaderState);
+      window.removeEventListener("single-spa:routing-event", syncHeaderState);
+      window.removeEventListener("popstate", syncHeaderState);
+      window.removeEventListener("storage", syncHeaderState);
     };
   }, []);
+
+  if (!visible) return null;
 
   return (
     <header>

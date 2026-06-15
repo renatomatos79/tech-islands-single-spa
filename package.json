@@ -1,0 +1,10 @@
+{
+  "name": "single-spa-workspace",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently -n root,header,footer,home,auth,nav,user,products -c auto \"npm --prefix apps/root-config run dev\" \"npm --prefix apps/header run dev\" \"npm --prefix apps/footer run dev\" \"npm --prefix apps/home run dev\" \"npm --prefix apps/auth run dev\" \"npm --prefix apps/nav run dev\" \"npm --prefix apps/user run dev\" \"npm --prefix apps/products run dev\""
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}

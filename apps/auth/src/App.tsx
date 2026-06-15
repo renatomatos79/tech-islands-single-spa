@@ -13,7 +13,6 @@ export default function App() {
 
   return (
     <main>
-      <h1>Login</h1>
       <button onClick={handleLogin}>Fake Login</button>
     </main>
   );
