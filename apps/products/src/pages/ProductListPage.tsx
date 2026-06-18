@@ -1,7 +1,56 @@
+import type { CSSProperties } from "react";
 import { Link } from "react-router-dom";
 import { useIntl } from "react-intl";
 import { useDeleteProduct, useProducts } from "../hooks/useProducts";
 import { useProductStore } from "../store/productStore";
+
+const tableContainerStyle: CSSProperties = {
+  border: "1px solid var(--border)",
+  borderRadius: 8,
+  overflow: "hidden",
+  boxShadow: "var(--shadow)",
+  background: "var(--bg)"
+};
+
+const tableStyle: CSSProperties = {
+  width: "100%",
+  borderCollapse: "collapse",
+  textAlign: "left"
+};
+
+const headerCellStyle: CSSProperties = {
+  padding: "12px 16px",
+  borderRight: "1px solid var(--border)",
+  borderBottom: "1px solid var(--border)",
+  background: "var(--social-bg)",
+  color: "var(--text-h)",
+  fontSize: 14,
+  fontWeight: 600
+};
+
+const cellStyle: CSSProperties = {
+  padding: "12px 16px",
+  borderRight: "1px solid var(--border)",
+  borderBottom: "1px solid var(--border)",
+  verticalAlign: "middle"
+};
+
+const zebraRowStyle: CSSProperties = {
+  background: "var(--social-bg)"
+};
+
+const lastColumnStyle: CSSProperties = {
+  borderRight: 0
+};
+
+const actionsCellStyle: CSSProperties = {
+  ...cellStyle,
+  whiteSpace: "nowrap"
+};
+
+const actionButtonStyle: CSSProperties = {
+  cursor: "pointer"
+};
 
 export function ProductListPage() {
   const intl = useIntl();
@@ -33,47 +82,73 @@ export function ProductListPage() {
       {!data?.length ? (
         <p>{intl.formatMessage({ id: "products.empty" })}</p>
       ) : (
-        <table width="100%" cellPadding="8">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>{intl.formatMessage({ id: "products.sku" })}</th>
-              <th>{intl.formatMessage({ id: "products.description" })}</th>
-              <th>{intl.formatMessage({ id: "products.price" })}</th>
-              <th>{intl.formatMessage({ id: "products.currency" })}</th>
-              <th>{intl.formatMessage({ id: "products.actions" })}</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {data.map((product) => (
-              <tr key={product.id}>
-                <td>{product.id}</td>
-                <td>{product.sku}</td>
-                <td>{product.description}</td>
-                <td>{product.price}</td>
-                <td>{product.currency}</td>
-                <td>
-                  <Link
-                    to={`/products/${product.id}/edit`}
-                    onClick={() => setSelectedProductId(product.id)}
-                  >
-                    <button>
-                      {intl.formatMessage({ id: "products.edit" })}
-                    </button>
-                  </Link>
-
-                  <button
-                    style={{ marginLeft: 8 }}
-                    onClick={() => deleteProduct.mutate(product.id)}
-                  >
-                    {intl.formatMessage({ id: "products.delete" })}
-                  </button>
-                </td>
+        <div style={tableContainerStyle}>
+          <table style={tableStyle}>
+            <thead>
+              <tr>
+                <th style={headerCellStyle}>ID</th>
+                <th style={headerCellStyle}>
+                  {intl.formatMessage({ id: "products.sku" })}
+                </th>
+                <th style={headerCellStyle}>
+                  {intl.formatMessage({ id: "products.description" })}
+                </th>
+                <th style={headerCellStyle}>
+                  {intl.formatMessage({ id: "products.price" })}
+                </th>
+                <th style={headerCellStyle}>
+                  {intl.formatMessage({ id: "products.currency" })}
+                </th>
+                <th style={{ ...headerCellStyle, ...lastColumnStyle }}>
+                  {intl.formatMessage({ id: "products.actions" })}
+                </th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+
+            <tbody>
+              {data.map((product, index) => {
+                const rowCellStyle =
+                  index === data.length - 1
+                    ? { ...cellStyle, borderBottom: 0 }
+                    : cellStyle;
+                const rowActionsCellStyle =
+                  index === data.length - 1
+                    ? { ...actionsCellStyle, borderBottom: 0 }
+                    : actionsCellStyle;
+
+                return (
+                  <tr
+                    key={product.id}
+                    style={index % 2 === 1 ? zebraRowStyle : undefined}
+                  >
+                    <td style={rowCellStyle}>{product.id}</td>
+                    <td style={rowCellStyle}>{product.sku}</td>
+                    <td style={rowCellStyle}>{product.description}</td>
+                    <td style={rowCellStyle}>{product.price}</td>
+                    <td style={rowCellStyle}>{product.currency}</td>
+                    <td style={{ ...rowActionsCellStyle, ...lastColumnStyle }}>
+                      <Link
+                        to={`/products/${product.id}/edit`}
+                        onClick={() => setSelectedProductId(product.id)}
+                      >
+                        <button style={actionButtonStyle}>
+                          {intl.formatMessage({ id: "products.edit" })}
+                        </button>
+                      </Link>
+
+                      <button
+                        style={{ ...actionButtonStyle, marginLeft: 8 }}
+                        onClick={() => deleteProduct.mutate(product.id)}
+                      >
+                        {intl.formatMessage({ id: "products.delete" })}
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
       )}
     </main>
   );

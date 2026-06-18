@@ -18,6 +18,7 @@ export const unmount = lifecycles.unmount;
 
 if (import.meta.env.DEV) {
   const root = document.getElementById("root")
-  ReactDOMClient.createroot(root).render(<App />)
+  console.log("root", root)
+  if (root) ReactDOMClient.createRoot(root).render(<App />)
 }
 
