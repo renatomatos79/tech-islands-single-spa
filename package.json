@@ -2,6 +2,7 @@
   "name": "single-spa-workspace",
   "private": true,
   "scripts": {
+    "install": "concurrently -n root,header,footer,home,auth,nav,user,products -c auto \"npm --prefix apps/root-config install\" \"npm --prefix apps/header install\" \"npm --prefix apps/footer install\" \"npm --prefix apps/home install\" \"npm --prefix apps/auth install\" \"npm --prefix apps/nav install\" \"npm --prefix apps/user install\" \"npm --prefix apps/products install\"",
     "dev": "concurrently -n root,header,footer,home,auth,nav,user,products -c auto \"npm --prefix apps/root-config run dev\" \"npm --prefix apps/header run dev\" \"npm --prefix apps/footer run dev\" \"npm --prefix apps/home run dev\" \"npm --prefix apps/auth run dev\" \"npm --prefix apps/nav run dev\" \"npm --prefix apps/user run dev\" \"npm --prefix apps/products run dev\""
   },
   "devDependencies": {

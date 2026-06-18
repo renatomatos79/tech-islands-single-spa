@@ -15,3 +15,9 @@ const lifecycles = singleSpaReact({
 export const bootstrap = lifecycles.bootstrap;
 export const mount = lifecycles.mount;
 export const unmount = lifecycles.unmount;
+
+if (import.meta.env.DEV) {
+  const root = document.getElementById("root")
+  ReactDOMClient.createroot(root).render(<App />)
+}
+

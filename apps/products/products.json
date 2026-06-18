@@ -1,0 +1,11 @@
+{
+  "products": [
+    {
+      "id": "1",
+      "sku": "SKU-001",
+      "description": "Notebook",
+      "price": 1200,
+      "currency": "EUR"
+    }
+  ]
+}
