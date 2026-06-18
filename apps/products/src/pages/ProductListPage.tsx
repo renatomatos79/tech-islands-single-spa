@@ -4,6 +4,7 @@ import { useIntl } from "react-intl";
 import { useDeleteProduct, useProducts } from "../hooks/useProducts";
 import { useProductStore } from "../store/productStore";
 
+// table definitions - in a real app, these would likely be replaced with a proper table component and CSS, but for simplicity we're using inline styles here
 const tableContainerStyle: CSSProperties = {
   border: "1px solid var(--border)",
   borderRadius: 8,
