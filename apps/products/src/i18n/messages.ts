@@ -9,6 +9,7 @@ export const messages = {
     "products.actions": "Actions",
     "products.edit": "Edit",
     "products.delete": "Delete",
+    "products.removeSelected": "Remove selected",
     "products.save": "Save",
     "products.cancel": "Cancel",
     "products.loading": "Loading...",

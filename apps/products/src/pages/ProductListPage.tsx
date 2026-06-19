@@ -1,4 +1,4 @@
-import type { CSSProperties } from "react";
+import { useEffect, useRef, type CSSProperties } from "react";
 import { Link } from "react-router-dom";
 import { useIntl } from "react-intl";
 import { useDeleteProduct, useProducts } from "../hooks/useProducts";
@@ -52,11 +52,69 @@ const actionButtonStyle: CSSProperties = {
   cursor: "pointer"
 };
 
+const toolbarStyle: CSSProperties = {
+  display: "flex",
+  gap: 8
+};
+
+const checkboxCellStyle: CSSProperties = {
+  ...cellStyle,
+  width: 48,
+  textAlign: "center"
+};
+
+const checkboxHeaderCellStyle: CSSProperties = {
+  ...headerCellStyle,
+  width: 48,
+  textAlign: "center"
+};
+
 export function ProductListPage() {
   const intl = useIntl();
   const { data, isLoading } = useProducts();
   const deleteProduct = useDeleteProduct();
-  const setSelectedProductId = useProductStore((s) => s.setSelectedProductId);
+  const selectAllRef = useRef<HTMLInputElement>(null);
+  const productIds = useProductStore((state) => state.productIds);
+  const addProductId = useProductStore((state) => state.addProductId);
+  const removeProductId = useProductStore((state) => state.removeProductId);
+  const clearProductIds = useProductStore((state) => state.clearProductIds);
+  const products = data ?? [];
+  const hasSelectedProducts = productIds.length > 0;
+  const allProductsSelected =
+    products.length > 0 && products.every((product) => productIds.includes(product.id));
+  const someProductsSelected =
+    products.some((product) => productIds.includes(product.id)) && !allProductsSelected;
+
+  useEffect(() => {
+    if (selectAllRef.current) {
+      selectAllRef.current.indeterminate = someProductsSelected;
+    }
+  }, [someProductsSelected]);
+
+  function handleSelectProduct(id: string, checked: boolean) {
+    if (checked) {
+      addProductId(id);
+      return;
+    }
+
+    removeProductId(id);
+  }
+
+  function handleSelectAll(checked: boolean) {
+    products.forEach((product) => {
+      if (checked) {
+        addProductId(product.id);
+        return;
+      }
+
+      removeProductId(product.id);
+    });
+  }
+
+  function handleDeleteSelectedProducts() {
+    productIds.forEach((id) => deleteProduct.mutate(id));
+    clearProductIds();
+  }
 
   if (isLoading) {
     return <p>{intl.formatMessage({ id: "products.loading" })}</p>;
@@ -74,18 +132,35 @@ export function ProductListPage() {
       >
         <h1>{intl.formatMessage({ id: "products.title" })}</h1>
 
-        <Link to="/products/new">
-          <button>+ {intl.formatMessage({ id: "products.add" })}</button>
-        </Link>
+        <div style={toolbarStyle}>
+          <button
+            disabled={!hasSelectedProducts || deleteProduct.isPending}
+            onClick={handleDeleteSelectedProducts}
+          >
+            {intl.formatMessage({ id: "products.removeSelected" })}
+          </button>
+
+          <Link to="/products/new">
+            <button>+ {intl.formatMessage({ id: "products.add" })}</button>
+          </Link>
+        </div>
       </div>
 
-      {!data?.length ? (
+      {!products.length ? (
         <p>{intl.formatMessage({ id: "products.empty" })}</p>
       ) : (
         <div style={tableContainerStyle}>
           <table style={tableStyle}>
             <thead>
               <tr>
+                <th style={checkboxHeaderCellStyle}>
+                  <input
+                    ref={selectAllRef}
+                    type="checkbox"
+                    checked={allProductsSelected}
+                    onChange={(event) => handleSelectAll(event.target.checked)}
+                  />
+                </th>
                 <th style={headerCellStyle}>ID</th>
                 <th style={headerCellStyle}>
                   {intl.formatMessage({ id: "products.sku" })}
@@ -106,21 +181,35 @@ export function ProductListPage() {
             </thead>
 
             <tbody>
-              {data.map((product, index) => {
+              {products.map((product, index) => {
                 const rowCellStyle =
-                  index === data.length - 1
+                  index === products.length - 1
                     ? { ...cellStyle, borderBottom: 0 }
                     : cellStyle;
+                const rowCheckboxCellStyle =
+                  index === products.length - 1
+                    ? { ...checkboxCellStyle, borderBottom: 0 }
+                    : checkboxCellStyle;
                 const rowActionsCellStyle =
-                  index === data.length - 1
+                  index === products.length - 1
                     ? { ...actionsCellStyle, borderBottom: 0 }
                     : actionsCellStyle;
+                const isSelected = productIds.includes(product.id);
 
                 return (
                   <tr
                     key={product.id}
                     style={index % 2 === 1 ? zebraRowStyle : undefined}
                   >
+                    <td style={rowCheckboxCellStyle}>
+                      <input
+                        type="checkbox"
+                        checked={isSelected}
+                        onChange={(event) =>
+                          handleSelectProduct(product.id, event.target.checked)
+                        }
+                      />
+                    </td>
                     <td style={rowCellStyle}>{product.id}</td>
                     <td style={rowCellStyle}>{product.sku}</td>
                     <td style={rowCellStyle}>{product.description}</td>
@@ -129,7 +218,6 @@ export function ProductListPage() {
                     <td style={{ ...rowActionsCellStyle, ...lastColumnStyle }}>
                       <Link
                         to={`/products/${product.id}/edit`}
-                        onClick={() => setSelectedProductId(product.id)}
                       >
                         <button style={actionButtonStyle}>
                           {intl.formatMessage({ id: "products.edit" })}
@@ -138,7 +226,10 @@ export function ProductListPage() {
 
                       <button
                         style={{ ...actionButtonStyle, marginLeft: 8 }}
-                        onClick={() => deleteProduct.mutate(product.id)}
+                        onClick={() => {
+                          deleteProduct.mutate(product.id);
+                          removeProductId(product.id);
+                        }}
                       >
                         {intl.formatMessage({ id: "products.delete" })}
                       </button>
