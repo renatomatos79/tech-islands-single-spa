@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { navigateToUrl } from "single-spa";
 import {
   isAuthenticated,
   shouldShowHeader,
@@ -33,17 +32,6 @@ export default function App() {
   return (
     <header>
       <h2>React 19 single-spa App</h2>
-      {!authenticated && (
-        <a
-          href="/login"
-          onClick={(event) => {
-            event.preventDefault();
-            navigateToUrl("/login");
-          }}
-        >
-          Login
-        </a>
-      )}
     </header>
   );
 }

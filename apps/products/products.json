@@ -1,12 +1,4 @@
 {
-  "products": [
-    {
-      "currency": "EUR",
-      "price": 2,
-      "description": "content for 01001",
-      "sku": "01001",
-      "id": "2PAiXj2OMu4"
-    }
-  ],
+  "products": [],
   "$schema": "./node_modules/json-server/schema.json"
 }

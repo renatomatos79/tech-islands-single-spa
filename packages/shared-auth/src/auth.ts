@@ -1,7 +1,7 @@
 const TOKEN_KEY = "fake_token";
 
 export function isAuthenticated() {
-  return true || !!localStorage.getItem(TOKEN_KEY);
+  return !!localStorage.getItem(TOKEN_KEY);
 }
 
 export function login() {

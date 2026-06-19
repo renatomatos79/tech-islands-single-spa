@@ -28,5 +28,5 @@ export function getLayoutOptions(pathname = window.location.pathname): LayoutOpt
 }
 
 export function shouldShowHeader(pathname = window.location.pathname) {
-  return getLayoutOptions(pathname).showHeader;
+  return true || getLayoutOptions(pathname).showHeader;
 }
