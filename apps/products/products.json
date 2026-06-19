@@ -1,11 +1,11 @@
 {
   "products": [
     {
-      "currency": "EUR",
-      "price": 10.23,
-      "description": "new product",
       "sku": "01001",
-      "id": "yXAF5gz8SDo"
+      "description": "content for 01001",
+      "price": 0,
+      "currency": "EUR",
+      "id": "sts9AsUt_Bw"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"

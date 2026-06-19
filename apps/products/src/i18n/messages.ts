@@ -17,6 +17,9 @@ export const messages = {
     "currency.usd": "Dollar",
     "currency.brl": "Brazilian Real",
     "validation.required": "This field is required",
-    "validation.price": "Price must be greater than zero"
+    "validation.sku.min": "SKU must be at least 5 characters",
+    "validation.sku.max": "SKU must be at most 20 characters",
+    "validation.description.max": "Description must be at most 255 characters",
+    "validation.price": "Price must be greater than or equal to zero"
   }
 };
